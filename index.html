@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Aaron's Favourite Movies</title>
+    <link rel="stylesheet" href="style/style.css">
+  </head>
+  <body>
+    <h1 id="myHeading">Aaron's Favourite Movies</h1>
+    <p>Aaron's Top 10 favourite movies of all time.</p>
+    <button id="toggleNewMovieForm">Add New Movie</button>
+    <div class="newMovieForm" style="display: none">
+      <p class="description">Enter details of the movie you want to add to the top ten list:</p>
+      <span>Movie Title:</span>
+      <input type="text" id="title"><br>
+      <span>Year of Release:</span>
+      <input type="number" id="year"><br>
+      <span>Comment:</span>
+      <input type="textarea" id="comment"><br>
+      <button type='submit' class="submit">Submit</button>
+    </div>
+    <div class="topTenList">
+      <ul>
+        <li><h3 class="title">Bean</h3><span class ="year">1997</span><p class="comment">A very funny movie that I like to watch all the time especially in bed because I have a thing for Rowan Atkinson and I want to kiss and cuddle him all night long.</p></li>
+        <li><h3>Anaconda</h3><span>1997</span><p>I like to hiss like a snake.</p></li>
+        <li><h3>Titanic</h3><span>1997</span><p>A beautiful romantic poem aboard a love boat.</p></li>
+        <li><h3>Good Will Hunting</h3><span>1997</span><p>R.I.P Robbie Williams</p></li>
+      </ul>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
