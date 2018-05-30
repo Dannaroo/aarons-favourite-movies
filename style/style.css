@@ -28,6 +28,14 @@ li {
   align-items: center;
   border: solid black 2px;
   border-radius: 2px;
+  display: flex;
+}
+li h3,
+li h4,
+li p,
+li span,
+li button {
+  margin-left: .5em;
 }
 input,
 button {
@@ -69,12 +77,10 @@ p + button {
 .newMovieForm li button + button {
   background: #508abc;
 }
-li button:first-child {
-  margin-left: auto;
-  background: #52bab3;
-}
+
 li button:last-child {
   background: darkred;
+  align-self: flex-end;
 }
 .newMovieForm li button:last-child {
   background: #768da3;
@@ -92,4 +98,31 @@ li span {
   font-style: italic;
   font-weight: 300;
   font-size: .8em;
+}
+
+.first,
+.second,
+.third {
+  border: 1px solid black;
+  border radius: 50%;
+  display: block;
+  padding: 5px;
+  border-radius: 50%;
+  font-size: 1.5em;
+  color: white;
+  font-family: "arial black";
+  min-width: 33px;
+  text-align: center;
+}
+
+.first {
+  background-color: gold;
+}
+
+.second {
+  background-color: silver;
+}
+
+.third {
+  background-color: #CD7F32;
 }

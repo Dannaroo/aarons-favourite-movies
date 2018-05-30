@@ -7,24 +7,65 @@ const submitButton = document.querySelector('.submit');
 const topTenList = document.querySelector('.topTenList');
 const listUl = topTenList.querySelector('ul');
 const lis = listUl.children;
+let firstListItem = listUl.firstElementChild;
+let lastListItem = listUl.lastElementChild;
 
-//This function awards first, second and third medals to the top 3 films.
+//This function removes up and down buttons at the top and bottom of the list
+//respectively.
+function removeInoperableButtons() {
+    firstListItem = listUl.firstElementChild;
+    if (firstListItem) {
+    let removeUp = firstListItem.querySelector("button.up");
+    firstListItem.removeChild(removeUp);
+
+    lastListItem = listUl.lastElementChild;
+    let removeDown = lastListItem.querySelector("button.down");
+    lastListItem.removeChild(removeDown);
+  }
+}
+
+
+//This function awards first, second and third medals to the top 3 films and
+//removes medals that don't apply.
 function attachPodium(li) {
+  let removeFirst = li.querySelector("h4.first");
+  let removeSecond = li.querySelector("h4.second");
+  let removeThird = li.querySelector("h4.third");
   if (li === listUl.firstElementChild && !li.querySelector('.first')) {
     let first = document.createElement('h4');
     first.innerHTML = "1";
     first.className = "first";
     li.insertBefore(first, li.firstElementChild);
+    if (removeSecond) {
+      li.removeChild(removeSecond);
+    }
+    if (removeThird) {
+      li.removeChild(removeThird);
+    }
   } else if ( li === listUl.firstElementChild.nextElementSibling && !li.querySelector('.second')) {
     let second = document.createElement('h4');
     second.innerHTML = "2";
     second.className = "second";
     li.insertBefore(second, li.firstElementChild);
+    if (removeFirst) {
+      li.removeChild(removeFirst);
+    }
+    if (removeThird) {
+      li.removeChild(removeThird);
+    }
   } else if ( li === listUl.firstElementChild.nextElementSibling.nextElementSibling && !li.querySelector('.third')) {
     let third = document.createElement('h4');
     third.innerHTML = "3";
     third.className = "third";
     li.insertBefore(third, li.firstElementChild);
+    if (removeFirst) {
+      li.removeChild(removeFirst);
+    }
+    if (removeSecond) {
+      li.removeChild(removeSecond);
+    }
+  } else if (li !== listUl.firstElementChild.nextElementSibling.nextElementSibling && removeThird) {
+    li.removeChild(removeThird);
   }
 }
 
@@ -59,6 +100,7 @@ for (let i = 0; i < lis.length; i += 1 ) {
       attachListItemButton(lis[i]);
       attachPodium(lis[i]);
      }
+     removeInoperableButtons();
 
 //This code will open up the ability to add a new movie to the top 10 list
 //when the 'Add New Movie' button is clicked.
@@ -121,4 +163,5 @@ listUl.addEventListener('click', (event) => {
           attachListItemButton(lis[i]);
           attachPodium(lis[i]);
          }
+         removeInoperableButtons();
   });
