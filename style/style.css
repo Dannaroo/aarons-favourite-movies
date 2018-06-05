@@ -100,16 +100,14 @@ li span {
   font-size: .8em;
 }
 
-.first,
-.second,
-.third {
+.numbers {
+  color: black;
   border: 1px solid black;
   border radius: 50%;
   display: block;
   padding: 5px;
   border-radius: 50%;
   font-size: 1.5em;
-  color: white;
   font-family: "arial black";
   min-width: 33px;
   text-align: center;
@@ -117,12 +115,15 @@ li span {
 
 .first {
   background-color: gold;
+  color: white;
 }
 
 .second {
   background-color: silver;
+  color: white;
 }
 
 .third {
   background-color: #CD7F32;
+  color: white;
 }

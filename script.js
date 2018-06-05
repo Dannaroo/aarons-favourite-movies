@@ -23,8 +23,26 @@ function removeInoperableButtons() {
     lastListItem.removeChild(removeDown);
   }
 }
+//This function will add numbers to each list item 4 - 10.
+function add4to10(li, listLength) {
+  let hasANumber = li.querySelector('.numbers');
+  console.log("Hi");
+  if (!hasANumber && (li.innerHTML !== listLength) ) {
+    let number = document.createElement('h4');
+    number.innerHTML = listLength;
+    number.className = "numbers";
+    li.insertBefore(number, li.LastElementChild);
+    console.log("Ho");
+  }
+}
+//This function will remove unwanted numbers 4-10.
+function removeNumbers(li, liIndex) {
+  let hasANumber = li.querySelector('.numbers');
+  if (hasANumber && (li.innerHTML !== liIndex)) {
+    li.removeChild(hasANumber);
+  }
 
-
+}
 //This function awards first, second and third medals to the top 3 films and
 //removes medals that don't apply.
 function attachPodium(li) {
@@ -34,38 +52,21 @@ function attachPodium(li) {
   if (li === listUl.firstElementChild && !li.querySelector('.first')) {
     let first = document.createElement('h4');
     first.innerHTML = "1";
-    first.className = "first";
+    first.className = "first ";
+    first.className += "numbers";
     li.insertBefore(first, li.firstElementChild);
-    if (removeSecond) {
-      li.removeChild(removeSecond);
-    }
-    if (removeThird) {
-      li.removeChild(removeThird);
-    }
   } else if ( li === listUl.firstElementChild.nextElementSibling && !li.querySelector('.second')) {
     let second = document.createElement('h4');
     second.innerHTML = "2";
-    second.className = "second";
+    second.className = "second ";
+    second.className += "numbers";
     li.insertBefore(second, li.firstElementChild);
-    if (removeFirst) {
-      li.removeChild(removeFirst);
-    }
-    if (removeThird) {
-      li.removeChild(removeThird);
-    }
   } else if ( li === listUl.firstElementChild.nextElementSibling.nextElementSibling && !li.querySelector('.third')) {
     let third = document.createElement('h4');
     third.innerHTML = "3";
-    third.className = "third";
+    third.className = "third ";
+    third.className += "numbers";
     li.insertBefore(third, li.firstElementChild);
-    if (removeFirst) {
-      li.removeChild(removeFirst);
-    }
-    if (removeSecond) {
-      li.removeChild(removeSecond);
-    }
-  } else if (li !== listUl.firstElementChild.nextElementSibling.nextElementSibling && removeThird) {
-    li.removeChild(removeThird);
   }
 }
 
@@ -97,9 +98,15 @@ function attachListItemButton(li) {
 //this for loop cycles through the film list and adds all the necessary
 //buttons and podium medals from the beginning of the program.
 for (let i = 0; i < lis.length; i += 1 ) {
-      attachListItemButton(lis[i]);
-      attachPodium(lis[i]);
-     }
+  removeNumbers(lis[i], i);
+  attachListItemButton(lis[i]);
+  attachPodium(lis[i], lis.length);
+  if (i > 3) {
+    add4to10(lis[i], lis.length);
+  }
+ }
+
+
      removeInoperableButtons();
 
 //This code will open up the ability to add a new movie to the top 10 list
@@ -120,11 +127,13 @@ submitButton.addEventListener('click', () => {
   let ul = document.getElementsByTagName('ul')[0];
   let li = document.createElement('li');
   newMovieTitle.value.tagName = "title"
-  li.innerHTML = "<h3>" + newMovieTitle.value + "</h3>";
+  li.innerHTML += "<h3>" + newMovieTitle.value + "</h3>";
   li.innerHTML += "<span>" + newMovieYear.value + "</span>";
   li.innerHTML += "<p>" + newMovieComment.value + "</p>";
   attachListItemButton(li);
   ul.appendChild(li);
+  console.log(lis.length);
+  add4to10(li, lis.length);
   newMovieTitle.value = "";
   newMovieYear.value = "";
   newMovieComment.value = "";
@@ -160,8 +169,12 @@ listUl.addEventListener('click', (event) => {
 //whenever a new list item is added.
   document.addEventListener('click', () => {
     for (let i = 0; i < lis.length; i += 1 ) {
+          removeNumbers(lis[i], i);
           attachListItemButton(lis[i]);
-          attachPodium(lis[i]);
+          attachPodium(lis[i], lis.length);
+
+            add4to10(lis[i], lis.length);
+
          }
          removeInoperableButtons();
   });
