@@ -15,58 +15,57 @@ let lastListItem = listUl.lastElementChild;
 function removeInoperableButtons() {
     firstListItem = listUl.firstElementChild;
     if (firstListItem) {
-    let removeUp = firstListItem.querySelector("button.up");
-    firstListItem.removeChild(removeUp);
+      let removeUp = firstListItem.querySelector("button.up");
+      if (removeUp) {
+        firstListItem.removeChild(removeUp);
+      }
+      lastListItem = listUl.lastElementChild;
+      let removeDown = lastListItem.querySelector("button.down");
+      if (removeDown) {
+      lastListItem.removeChild(removeDown);
+    }
+}
+}
+//updates new numbers 1 through 10
+function attachTopTenNumber(li, liLoc) {
+  let number = document.createElement('h4');
+  let theFirstChild = li.firstChild;
+  liLoc = liLoc + 1;
+  number.innerHTML = liLoc;
+  number.className = "numbers";
+  li.insertBefore(number, theFirstChild);
+}
 
-    lastListItem = listUl.lastElementChild;
-    let removeDown = lastListItem.querySelector("button.down");
-    lastListItem.removeChild(removeDown);
+function addPodiumClass(li, i) {
+  let number = li.querySelector('h4.numbers')
+  let first = li.querySelector('h4.first');
+  let second = li.querySelector('h4.second');
+  let third = li.querySelector('h4.third');
+  if (i == 0 && !first) {
+    number.className += " first";
+  }
+  if (i == 1 && !second) {
+    number.className += " second";
+  }
+  if (i == 2 && !third) {
+    number.className += " third";
   }
 }
-//This function will add numbers to each list item 4 - 10.
-function add4to10(li, listLength) {
-  let hasANumber = li.querySelector('.numbers');
-  console.log("Hi");
-  if (!hasANumber && (li.innerHTML !== listLength) ) {
-    let number = document.createElement('h4');
-    number.innerHTML = listLength;
-    number.className = "numbers";
-    li.insertBefore(number, li.LastElementChild);
-    console.log("Ho");
-  }
-}
-//This function will remove unwanted numbers 4-10.
-function removeNumbers(li, liIndex) {
-  let hasANumber = li.querySelector('.numbers');
-  if (hasANumber && (li.innerHTML !== liIndex)) {
-    li.removeChild(hasANumber);
-  }
 
+//clears old numbers 1 through 10
+function removeTopTenNumber(li) {
+  removeNumber = li.querySelector("h4.numbers");
+  li.removeChild(removeNumber);
 }
-//This function awards first, second and third medals to the top 3 films and
-//removes medals that don't apply.
-function attachPodium(li) {
-  let removeFirst = li.querySelector("h4.first");
-  let removeSecond = li.querySelector("h4.second");
-  let removeThird = li.querySelector("h4.third");
-  if (li === listUl.firstElementChild && !li.querySelector('.first')) {
-    let first = document.createElement('h4');
-    first.innerHTML = "1";
-    first.className = "first ";
-    first.className += "numbers";
-    li.insertBefore(first, li.firstElementChild);
-  } else if ( li === listUl.firstElementChild.nextElementSibling && !li.querySelector('.second')) {
-    let second = document.createElement('h4');
-    second.innerHTML = "2";
-    second.className = "second ";
-    second.className += "numbers";
-    li.insertBefore(second, li.firstElementChild);
-  } else if ( li === listUl.firstElementChild.nextElementSibling.nextElementSibling && !li.querySelector('.third')) {
-    let third = document.createElement('h4');
-    third.innerHTML = "3";
-    third.className = "third ";
-    third.className += "numbers";
-    li.insertBefore(third, li.firstElementChild);
+//clears old up and down arrows so new ones can be added each time they are clicked.
+function removeListItemButton(li) {
+  let removeUp = li.querySelector("button.up");
+  if (removeUp) {
+    li.removeChild(removeUp);
+  }
+  let removeDown = li.querySelector("button.down");
+  if (removeDown) {
+    li.removeChild(removeDown);
   }
 }
 
@@ -74,18 +73,15 @@ function attachPodium(li) {
 //and down the list.
 function attachListItemButton(li) {
   let up = document.createElement('button');
-  if (!li.querySelector(".up")) {
-    up.className = 'up';
-    up.innerHTML = '&#x02191';
-    li.insertBefore(up, li.firstElementChild);
-  }
+  let theFirstChild = li.firstChild;
+  up.className = 'up';
+  up.innerHTML = '&#x02191';
+  li.insertBefore(up, theFirstChild);
 
   let down = document.createElement('button');
-  if (!li.querySelector(".down")) {
-    down.className = 'down';
-    down.innerHTML = '&#x02193';
-    li.insertBefore(down, li.firstElementChild.nextElementSibling);
-  }
+  down.className = 'down';
+  down.innerHTML = '&#x02193';
+  li.insertBefore(down, theFirstChild);
 
   let remove = document.createElement('button');
   if (!li.querySelector(".remove")) {
@@ -97,17 +93,15 @@ function attachListItemButton(li) {
 
 //this for loop cycles through the film list and adds all the necessary
 //buttons and podium medals from the beginning of the program.
+
 for (let i = 0; i < lis.length; i += 1 ) {
-  removeNumbers(lis[i], i);
   attachListItemButton(lis[i]);
-  attachPodium(lis[i], lis.length);
-  if (i > 3) {
-    add4to10(lis[i], lis.length);
+  attachTopTenNumber(lis[i], i);
+  if (i < 3) {
+    addPodiumClass(lis[i], i);
   }
- }
-
-
-     removeInoperableButtons();
+}
+removeInoperableButtons();
 
 //This code will open up the ability to add a new movie to the top 10 list
 //when the 'Add New Movie' button is clicked.
@@ -131,9 +125,8 @@ submitButton.addEventListener('click', () => {
   li.innerHTML += "<span>" + newMovieYear.value + "</span>";
   li.innerHTML += "<p>" + newMovieComment.value + "</p>";
   attachListItemButton(li);
+  attachTopTenNumber(li, ul.length);
   ul.appendChild(li);
-  console.log(lis.length);
-  add4to10(li, lis.length);
   newMovieTitle.value = "";
   newMovieYear.value = "";
   newMovieComment.value = "";
@@ -167,14 +160,16 @@ listUl.addEventListener('click', (event) => {
   });
 //This section of code ensures the buttons and podium medals are updated
 //whenever a new list item is added.
-  document.addEventListener('click', () => {
+document.addEventListener('click', () => {
     for (let i = 0; i < lis.length; i += 1 ) {
-          removeNumbers(lis[i], i);
-          attachListItemButton(lis[i]);
-          attachPodium(lis[i], lis.length);
+      removeListItemButton(lis[i]);
+      attachListItemButton(lis[i]);
+      removeTopTenNumber(lis[i]);
+      attachTopTenNumber(lis[i], i);
+      if (i < 3) {
+        addPodiumClass(lis[i], i);
+      }
+    }
+    removeInoperableButtons();
 
-            add4to10(lis[i], lis.length);
-
-         }
-         removeInoperableButtons();
   });
