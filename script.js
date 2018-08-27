@@ -10,10 +10,65 @@ const lis = listUl.children;
 let firstListItem = listUl.firstElementChild;
 let lastListItem = listUl.lastElementChild;
 
+//make sure the browser supports localStorage
+function supportsLocalStorage() {
+  try {
+    return 'localStorage' in window && window['localStorage'] !== null;
+  } catch(e) {
+    return false;
+  }
+}
+
+//get the movieList from localStorage
+function getMovieList() {
+  const movieList = localStorage.getItem('movieList');
+  if(movieList) {
+    return JSON.parse(movieList);
+  } else {
+    return [];
+  }
+}
+
+//save an entry to localStorage when the add movie button is clicked
+function saveMovieEntry(str) {
+  const movieList = getMovieList();
+  str = "<li>" + str + "</li>";
+  movieList.push(str);
+  localStorage.setItem('movieList', JSON.stringify(movieList));
+}
+
+//remove any unwanted entries when the delete button is clicked.
+function removeMovieEntry(str) {
+  const movieList = getMovieList();
+  console.log(movieList)
+  console.log(str);
+  str = "<li>" + str + "</li>";
+  //////////// IN PROGRESS ////////////////
+  str.split()
+  for (i = 0; i < movieList.length; i += 1) {
+    if (movieList[i] === str) {
+
+      movieList.splice(i,1);
+      localStorage.setItem('movieList', JSON.stringify(movieList));
+    }
+  }
+
+}
+
+//fetch the movie list from local storage and append to the Ul.
+function localStorageList() {
+  const movieList = getMovieList();
+  if(movieList.length > 0) {
+    for(i = 0; i < movieList.length; i += 1) {
+      listUl.innerHTML += movieList[i];
+    }
+  }
+}
+
 //This function removes up and down buttons at the top and bottom of the list
 //respectively.
 function removeInoperableButtons() {
-    firstListItem = listUl.firstElementChild;
+  firstListItem = listUl.firstElementChild;
     if (firstListItem) {
       let removeUp = firstListItem.querySelector("button.up");
       if (removeUp) {
@@ -22,9 +77,9 @@ function removeInoperableButtons() {
       lastListItem = listUl.lastElementChild;
       let removeDown = lastListItem.querySelector("button.down");
       if (removeDown) {
-      lastListItem.removeChild(removeDown);
+        lastListItem.removeChild(removeDown);
     }
-}
+  }
 }
 //updates new numbers 1 through 10
 function attachTopTenNumber(li, liLoc) {
@@ -91,80 +146,16 @@ function attachListItemButton(li) {
   }
 }
 
-//this for loop cycles through the film list and adds all the necessary
-//buttons and podium medals from the beginning of the program.
 
-for (let i = 0; i < lis.length; i += 1 ) {
-  attachListItemButton(lis[i]);
-  attachTopTenNumber(lis[i], i);
-  if (i < 3) {
-    addPodiumClass(lis[i], i);
-  }
-}
-removeInoperableButtons();
+window.onload = function() {
+  if(supportsLocalStorage) {
 
-//This code will open up the ability to add a new movie to the top 10 list
-//when the 'Add New Movie' button is clicked.
-toggleNewMovieForm.addEventListener('click', () => {
-  if (newMovieForm.style.display === "none") {
-    toggleNewMovieForm.textContent = "Hide New Movie Details";
-    newMovieForm.style.display = "block";
-    } else {
-    toggleNewMovieForm.textContent = "Add New Movie";
-    newMovieForm.style.display = "none";
-    }
-  })
-
-//This code will publish the new movie to the page when the submit
-//button is clicked
-submitButton.addEventListener('click', () => {
-  let ul = document.getElementsByTagName('ul')[0];
-  let li = document.createElement('li');
-  newMovieTitle.value.tagName = "title"
-  li.innerHTML += "<h3>" + newMovieTitle.value + "</h3>";
-  li.innerHTML += "<span>" + newMovieYear.value + "</span>";
-  li.innerHTML += "<p>" + newMovieComment.value + "</p>";
-  attachListItemButton(li);
-  attachTopTenNumber(li, ul.length);
-  ul.appendChild(li);
-  newMovieTitle.value = "";
-  newMovieYear.value = "";
-  newMovieComment.value = "";
-});
-
-//this code adds functionality to the 'remove' 'up' and 'down' buttons
-listUl.addEventListener('click', (event) => {
-  if (event.target.tagName == 'BUTTON') {
-    if (event.target.className == 'remove') {
-      let li = event.target.parentNode;
-      let ul = li.parentNode;
-      ul.removeChild(li);
-    }
-    if (event.target.className == 'up') {
-      let li = event.target.parentNode;
-      let prevLi = li.previousElementSibling;
-      let ul = li.parentNode;
-      if(prevLi) {
-      ul.insertBefore(li, prevLi);
-      }
-    }
-    if (event.target.className == 'down') {
-      let li = event.target.parentNode;
-      let nextLi = li.nextElementSibling;
-      let ul = li.parentNode;
-      if(nextLi) {
-      ul.insertBefore(li, nextLi.nextElementSibling);
-      }
-    }
-  }
-  });
-//This section of code ensures the buttons and podium medals are updated
-//whenever a new list item is added.
-document.addEventListener('click', () => {
+    //append any movies from local storage to the DOM
+    localStorageList()
+    //this for loop cycles through the film list and adds all the necessary
+    //buttons and podium medals from the beginning of the program.
     for (let i = 0; i < lis.length; i += 1 ) {
-      removeListItemButton(lis[i]);
       attachListItemButton(lis[i]);
-      removeTopTenNumber(lis[i]);
       attachTopTenNumber(lis[i], i);
       if (i < 3) {
         addPodiumClass(lis[i], i);
@@ -172,4 +163,82 @@ document.addEventListener('click', () => {
     }
     removeInoperableButtons();
 
-  });
+    //This code will open up the ability to add a new movie to the top 10 list
+    //when the 'Add New Movie' button is clicked.
+    toggleNewMovieForm.addEventListener('click', () => {
+      if (newMovieForm.style.display === "none") {
+        toggleNewMovieForm.textContent = "Hide New Movie Details";
+        newMovieForm.style.display = "block";
+        } else {
+        toggleNewMovieForm.textContent = "Add New Movie";
+        newMovieForm.style.display = "none";
+        }
+      })
+
+    //This code will publish the new movie to the page when the submit
+    //button is clicked
+    submitButton.addEventListener('click', () => {
+      if (lis.length > 9) {
+        alert("Error: A Top 10 List Cannot Have More than 10 Things In It! Please remove a movie before adding any more.");
+      } else {
+        let ul = document.getElementsByTagName('ul')[0];
+        let li = document.createElement('li');
+        newMovieTitle.value.tagName = "title"
+        li.innerHTML += "<h3>" + newMovieTitle.value + "</h3>";
+        li.innerHTML += "<span>" + newMovieYear.value + "</span>";
+        li.innerHTML += "<p>" + newMovieComment.value + "</p>";
+        //add new movie to localStorage
+        saveMovieEntry(li.innerHTML);
+        attachListItemButton(li);
+        attachTopTenNumber(li, ul.length);
+        ul.appendChild(li);
+      }
+      newMovieTitle.value = "";
+      newMovieYear.value = "";
+      newMovieComment.value = "";
+    });
+
+    //this code adds functionality to the 'remove' 'up' and 'down' buttons
+    listUl.addEventListener('click', (event) => {
+      if (event.target.tagName == 'BUTTON') {
+        if (event.target.className == 'remove') {
+          let li = event.target.parentNode;
+          let ul = li.parentNode;
+          ul.removeChild(li);
+          removeMovieEntry(li.innerHTML)
+        }
+        if (event.target.className == 'up') {
+          let li = event.target.parentNode;
+          let prevLi = li.previousElementSibling;
+          let ul = li.parentNode;
+          if(prevLi) {
+          ul.insertBefore(li, prevLi);
+          }
+        }
+        if (event.target.className == 'down') {
+          let li = event.target.parentNode;
+          let nextLi = li.nextElementSibling;
+          let ul = li.parentNode;
+          if(nextLi) {
+          ul.insertBefore(li, nextLi.nextElementSibling);
+          }
+        }
+      }
+      });
+    //This section of code ensures the buttons and podium medals are updated
+    //whenever a new list item is added.
+    document.addEventListener('click', () => {
+        for (let i = 0; i < lis.length; i += 1 ) {
+          removeListItemButton(lis[i]);
+          attachListItemButton(lis[i]);
+          removeTopTenNumber(lis[i]);
+          attachTopTenNumber(lis[i], i);
+          if (i < 3) {
+            addPodiumClass(lis[i], i);
+          }
+        }
+        removeInoperableButtons();
+
+      });
+    }
+  }
