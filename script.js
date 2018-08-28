@@ -37,22 +37,29 @@ function saveMovieEntry(str) {
   localStorage.setItem('movieList', JSON.stringify(movieList));
 }
 
-//remove any unwanted entries when the delete button is clicked.
+//remove any unwanted entries from localStorage when the delete button is clicked.
 function removeMovieEntry(str) {
+  //reduce the string to the inner HTML of the h3 to easily compare string in
+  //localStorage to string in event DOM.
+  function compareStr(string) {
+    //create array with [0] and [1] cut off by 'h3>'
+    let title = string.split('h3>');
+    //cut the array element into a new array at point '</'
+    title = title[1].split('</');
+    //return the array element with the h3 innerHTML.
+    return title[0];
+  }
   const movieList = getMovieList();
-  console.log(movieList)
-  console.log(str);
-  str = "<li>" + str + "</li>";
-  //////////// IN PROGRESS ////////////////
-  str.split()
+  const splitStrTitle = compareStr(str);
   for (i = 0; i < movieList.length; i += 1) {
-    if (movieList[i] === str) {
-
+    let movieListTitle = compareStr(movieList[i]);
+    if (movieListTitle === splitStrTitle) {
+      //remove the matching array element
       movieList.splice(i,1);
+      //reattach the array to localStorage
       localStorage.setItem('movieList', JSON.stringify(movieList));
     }
   }
-
 }
 
 //fetch the movie list from local storage and append to the Ul.
